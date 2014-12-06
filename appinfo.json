@@ -1,0 +1,157 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "metakirby5@gmail.com",
+    "longName": "Kirby Watchface Day/Night",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "characterRegex": "[0-9:.]",
+                "file": "fonts/emulogic.ttf",
+                "name": "FONT_EMULOGIC_24",
+                "type": "font"
+            },
+            {
+                "file": "images/backdrop.png",
+                "name": "KBY_BACKDROP",
+                "type": "png"
+            },
+            {
+                "file": "images/ball.png",
+                "name": "KBY_BALL",
+                "type": "png"
+            },
+            {
+                "file": "images/beam.png",
+                "name": "KBY_BEAM",
+                "type": "png"
+            },
+            {
+                "file": "images/crash.png",
+                "name": "KBY_CRASH",
+                "type": "png"
+            },
+            {
+                "file": "images/cutter.png",
+                "name": "KBY_CUTTER",
+                "type": "png"
+            },
+            {
+                "file": "images/fire.png",
+                "name": "KBY_FIRE",
+                "type": "png"
+            },
+            {
+                "file": "images/fireball.png",
+                "name": "KBY_FIREBALL",
+                "type": "png"
+            },
+            {
+                "file": "images/freeze.png",
+                "name": "KBY_FREEZE",
+                "type": "png"
+            },
+            {
+                "file": "images/hammer.png",
+                "name": "KBY_HAMMER",
+                "type": "png"
+            },
+            {
+                "file": "images/hijump.png",
+                "name": "KBY_HIJUMP",
+                "type": "png"
+            },
+            {
+                "file": "images/ice.png",
+                "name": "KBY_ICE",
+                "type": "png"
+            },
+            {
+                "file": "images/laser.png",
+                "name": "KBY_LASER",
+                "type": "png"
+            },
+            {
+                "file": "images/light.png",
+                "name": "KBY_LIGHT",
+                "type": "png"
+            },
+            {
+                "file": "images/mike.png",
+                "name": "KBY_MIKE",
+                "type": "png"
+            },
+            {
+                "file": "images/needle.png",
+                "name": "KBY_NEEDLE",
+                "type": "png"
+            },
+            {
+                "file": "images/parasol.png",
+                "name": "KBY_PARASOL",
+                "type": "png"
+            },
+            {
+                "file": "images/sleep.png",
+                "name": "KBY_SLEEP",
+                "type": "png"
+            },
+            {
+                "file": "images/spark.png",
+                "name": "KBY_SPARK",
+                "type": "png"
+            },
+            {
+                "file": "images/stone.png",
+                "name": "KBY_STONE",
+                "type": "png"
+            },
+            {
+                "file": "images/sword.png",
+                "name": "KBY_SWORD",
+                "type": "png"
+            },
+            {
+                "file": "images/throw.png",
+                "name": "KBY_THROW",
+                "type": "png"
+            },
+            {
+                "file": "images/tornado.png",
+                "name": "KBY_TORNADO",
+                "type": "png"
+            },
+            {
+                "file": "images/ufo.png",
+                "name": "KBY_UFO",
+                "type": "png"
+            },
+            {
+                "file": "images/wheel.png",
+                "name": "KBY_WHEEL",
+                "type": "png"
+            },
+            {
+                "file": "images/mix.png",
+                "name": "KBY_MIX",
+                "type": "png"
+            },
+            {
+                "file": "images/kirby_small.png",
+                "menuIcon": true,
+                "name": "KBY_SMALL",
+                "type": "png"
+            }
+        ]
+    },
+    "shortName": "Kirby",
+    "uuid": "15477828-5286-4c67-88da-6bcb6cf14879",
+    "versionCode": 1,
+    "versionLabel": "2.2",
+    "watchapp": {
+        "watchface": true
+    }
+}

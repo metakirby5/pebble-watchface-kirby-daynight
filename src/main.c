@@ -1,4 +1,6 @@
 #include <pebble.h>
+  
+#define NUM_KIRBIES 24
 
 static const uint32_t KIRBIES[] = {
   RESOURCE_ID_KBY_BACKDROP,
@@ -33,7 +35,9 @@ static TextLayer *s_time_layer;
 static GFont s_time_font;
   
 static BitmapLayer *s_kirby_layer;
-static GBitmap *s_kirby;
+static GBitmap *s_kirbies_cached[NUM_KIRBIES] = { NULL };
+
+static int cur_kirby = 0;
 
 static void update_time() {
   
@@ -64,22 +68,15 @@ static void update_time() {
     day = false;
   }
   
-  // Kirby - update every 5 secs
-  static int cur_tick = 0;
-  static int cur_kirby = 0;
-  if (cur_tick > 4) {
-    cur_tick = 0;
-    
-    if (cur_kirby > 23)
-      cur_kirby = 0;
-    
-    gbitmap_destroy(s_kirby);
-    s_kirby = gbitmap_create_with_resource(KIRBIES[cur_kirby]);
-    bitmap_layer_set_bitmap(s_kirby_layer, s_kirby);
-    
-    cur_kirby++;
-  }
-  cur_tick++;
+  // Kirby
+  if (!s_kirbies_cached[cur_kirby])
+    s_kirbies_cached[cur_kirby] = gbitmap_create_with_resource(KIRBIES[cur_kirby]);
+  
+  bitmap_layer_set_bitmap(s_kirby_layer, s_kirbies_cached[cur_kirby]);
+  
+  cur_kirby++;
+  if (cur_kirby > NUM_KIRBIES - 1)
+    cur_kirby = 0;
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -102,10 +99,16 @@ static void main_window_load(Window *window) {
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_layer));
   
   // Kirby
-  s_kirby = gbitmap_create_with_resource(RESOURCE_ID_KBY_MIX);
   s_kirby_layer = bitmap_layer_create(GRect(24, 10, 96, 120));
-  bitmap_layer_set_bitmap(s_kirby_layer, s_kirby);
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_kirby_layer));
+  
+  srand(time(NULL));
+  cur_kirby = rand() % NUM_KIRBIES;
+  
+  update_time();
+  
+  // Go back one Kirby so the next update keeps it the same
+  cur_kirby = (cur_kirby - 1 + NUM_KIRBIES) % NUM_KIRBIES;
 }
 
 static void main_window_unload(Window *window) {
@@ -114,12 +117,12 @@ static void main_window_unload(Window *window) {
   fonts_unload_custom_font(s_time_font);
   
   bitmap_layer_destroy(s_kirby_layer);
-  gbitmap_destroy(s_kirby);
+  for (int i = 0; i < NUM_KIRBIES; i++)
+    if (s_kirbies_cached[i])
+      gbitmap_destroy(s_kirbies_cached[i]);
 }
 
 static void init() {
-  
-  tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
   
   s_main_window = window_create();
   window_set_background_color(s_main_window, GColorWhite);
@@ -130,7 +133,7 @@ static void init() {
   });
   
   window_stack_push(s_main_window, true);
-  update_time();
+  tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 }
 
 static void deinit() {

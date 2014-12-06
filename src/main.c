@@ -46,6 +46,24 @@ static void update_time() {
   
   text_layer_set_text(s_time_layer, buffer);
   
+  // Set composting mode based on day/night
+  static bool day = true;
+  
+  // Night and it turns to day?
+  if (!day && (tick_time->tm_hour >= 6 && tick_time->tm_hour < 18)) {
+    bitmap_layer_set_compositing_mode(s_kirby_layer, GCompOpAssign);
+    text_layer_set_text_color(s_time_layer, GColorBlack);
+    window_set_background_color(s_main_window, GColorWhite);
+    day = true;
+  }
+  // Day and it turns to night?
+  else if (day && (tick_time->tm_hour >= 18 || tick_time->tm_hour < 6)) {
+    bitmap_layer_set_compositing_mode(s_kirby_layer, GCompOpAssignInverted);
+    text_layer_set_text_color(s_time_layer, GColorWhite);
+    window_set_background_color(s_main_window, GColorBlack);
+    day = false;
+  }
+  
   // Kirby - update every 5 secs
   static int cur_tick = 0;
   static int cur_kirby = 0;

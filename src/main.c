@@ -56,6 +56,7 @@ static const uint32_t KIRBIES[] = {
 };
 
 static Window *s_main_window;
+static Layer *s_root_layer;
 
 static TextLayer *s_time_layer;
 static GFont s_time_font;
@@ -81,6 +82,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   strftime(time_buf, FMT_TIME_LEN, clock_is_24h_style() ? FMT_24H : FMT_12H, tick_time);
   
   text_layer_set_text(s_time_layer, time_buf);
+  layer_mark_dirty((Layer *) s_time_layer);
   
   // Date
   static char date_buf[FMT_DATE_LEN];
@@ -91,6 +93,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   } while (*++cptr);
   
   text_layer_set_text(s_date_layer, date_buf);
+  layer_mark_dirty((Layer *) s_date_layer);
   
   // Set composting mode based on day/night
   static bool day = true;
@@ -103,6 +106,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     text_layer_set_text_color(s_time_layer, COLOR_FG_DAY);
     text_layer_set_text_color(s_date_layer, COLOR_FG_DAY);
     window_set_background_color(s_main_window, COLOR_BG_DAY);
+    layer_mark_dirty((Layer *) s_root_layer);
     day = true;
   }
   // Day and it turns to night?
@@ -113,6 +117,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     text_layer_set_text_color(s_time_layer, COLOR_FG_NIGHT);
     text_layer_set_text_color(s_date_layer, COLOR_FG_NIGHT);
     window_set_background_color(s_main_window, COLOR_BG_NIGHT);
+    layer_mark_dirty((Layer *) s_root_layer);
     day = false;
   }
   
@@ -121,6 +126,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     gbitmap_destroy(s_kirby);
   s_kirby = gbitmap_create_with_resource(KIRBIES[cur_kirby]);
   bitmap_layer_set_bitmap(s_kirby_layer, s_kirby);
+  layer_mark_dirty((Layer *) s_kirby_layer);
   
   cur_kirby++;
   if (cur_kirby > NUM_KIRBIES - 1)
@@ -133,6 +139,7 @@ static void bt_handler(bool connected) {
     gbitmap_destroy(s_bluetooth);
   s_bluetooth = gbitmap_create_with_resource(connected ? RESOURCE_ID_PHONE_BLANK : RESOURCE_ID_PHONE_X);
   bitmap_layer_set_bitmap(s_bluetooth_layer, s_bluetooth);
+  layer_mark_dirty((Layer *) s_bluetooth_layer);
 }
 
 static void batt_handler(BatteryChargeState charge) {
@@ -152,9 +159,12 @@ static void batt_handler(BatteryChargeState charge) {
     ?   RESOURCE_ID_BATT_1
     : RESOURCE_ID_BATT_X);
   bitmap_layer_set_bitmap(s_battery_layer, s_battery);
+  layer_mark_dirty((Layer *) s_battery_layer);
 }
 
 static void main_window_load(Window *window) {
+  
+  s_root_layer = window_get_root_layer(window);
   
   // Time
   s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_EMULOGIC_24));
@@ -174,15 +184,15 @@ static void main_window_load(Window *window) {
   
   // Bluetooth
   s_bluetooth_layer = bitmap_layer_create(POS_BT);
-  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_bluetooth_layer));
+  layer_add_child(s_root_layer, bitmap_layer_get_layer(s_bluetooth_layer));
   
   // Battery
   s_battery_layer = bitmap_layer_create(POS_BATT);
-  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_battery_layer));
+  layer_add_child(s_root_layer, bitmap_layer_get_layer(s_battery_layer));
   
   // Kirby
   s_kirby_layer = bitmap_layer_create(POS_KBY);
-  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_kirby_layer));
+  layer_add_child(s_root_layer, bitmap_layer_get_layer(s_kirby_layer));
   
   // === First update ===
   

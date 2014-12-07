@@ -150,7 +150,7 @@
     "shortName": "Kirby",
     "uuid": "15477828-5286-4c67-88da-6bcb6cf14879",
     "versionCode": 1,
-    "versionLabel": "2.3",
+    "versionLabel": "2.4",
     "watchapp": {
         "watchface": true
     }

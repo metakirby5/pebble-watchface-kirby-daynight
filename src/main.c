@@ -35,9 +35,9 @@ static TextLayer *s_time_layer;
 static GFont s_time_font;
   
 static BitmapLayer *s_kirby_layer;
-static GBitmap *s_kirbies_cached[NUM_KIRBIES] = { NULL };
+static GBitmap *s_kirby;
 
-static int cur_kirby = 0;
+static int cur_kirby;
 
 static void update_time() {
   
@@ -69,10 +69,10 @@ static void update_time() {
   }
   
   // Kirby
-  if (!s_kirbies_cached[cur_kirby])
-    s_kirbies_cached[cur_kirby] = gbitmap_create_with_resource(KIRBIES[cur_kirby]);
-  
-  bitmap_layer_set_bitmap(s_kirby_layer, s_kirbies_cached[cur_kirby]);
+  if (s_kirby)
+    gbitmap_destroy(s_kirby);
+  s_kirby = gbitmap_create_with_resource(KIRBIES[cur_kirby]);
+  bitmap_layer_set_bitmap(s_kirby_layer, s_kirby);
   
   cur_kirby++;
   if (cur_kirby > NUM_KIRBIES - 1)
@@ -117,9 +117,8 @@ static void main_window_unload(Window *window) {
   fonts_unload_custom_font(s_time_font);
   
   bitmap_layer_destroy(s_kirby_layer);
-  for (int i = 0; i < NUM_KIRBIES; i++)
-    if (s_kirbies_cached[i])
-      gbitmap_destroy(s_kirbies_cached[i]);
+  if (s_kirby)
+    gbitmap_destroy(s_kirby);
 }
 
 static void init() {

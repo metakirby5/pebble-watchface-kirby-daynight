@@ -9,6 +9,52 @@
     "resources": {
         "media": [
             {
+                "file": "images/phone_blank.png",
+                "name": "PHONE_BLANK",
+                "type": "png"
+            },
+            {
+                "file": "images/battery_ok.png",
+                "name": "BATT_OK",
+                "type": "png"
+            },
+            {
+                "file": "images/battery_chg.png",
+                "name": "BATT_CHG",
+                "type": "png"
+            },
+            {
+                "file": "images/phone_x.png",
+                "name": "PHONE_X",
+                "type": "png"
+            },
+            {
+                "file": "images/battery_2.png",
+                "name": "BATT_2",
+                "type": "png"
+            },
+            {
+                "file": "images/battery_1.png",
+                "name": "BATT_1",
+                "type": "png"
+            },
+            {
+                "file": "images/battery_x.png",
+                "name": "BATT_X",
+                "type": "png"
+            },
+            {
+                "file": "images/battery_3.png",
+                "name": "BATT_3",
+                "type": "png"
+            },
+            {
+                "file": "images/kirby_small.png",
+                "menuIcon": true,
+                "name": "KBY_ICON",
+                "type": "png"
+            },
+            {
                 "characterRegex": "[0-9:.]",
                 "file": "fonts/emulogic.ttf",
                 "name": "FONT_EMULOGIC_24",
@@ -144,19 +190,13 @@
                 "file": "images/mix.png",
                 "name": "KBY_MIX",
                 "type": "png"
-            },
-            {
-                "file": "images/kirby_small.png",
-                "menuIcon": true,
-                "name": "KBY_SMALL",
-                "type": "png"
             }
         ]
     },
     "shortName": "Kirby",
     "uuid": "15477828-5286-4c67-88da-6bcb6cf14879",
     "versionCode": 1,
-    "versionLabel": "2.4",
+    "versionLabel": "2.5",
     "watchapp": {
         "watchface": true
     }

@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include <ctype.h>
   
 #define NUM_KIRBIES 24
 
@@ -33,6 +34,9 @@ static Window *s_main_window;
 
 static TextLayer *s_time_layer;
 static GFont s_time_font;
+
+static TextLayer *s_date_layer;
+static GFont s_date_font;
   
 static BitmapLayer *s_kirby_layer;
 static GBitmap *s_kirby;
@@ -45,10 +49,20 @@ static void update_time() {
   time_t temp = time(NULL);
   struct tm *tick_time = localtime(&temp);
   
-  static char buffer[] = "00:00";
-  strftime(buffer, sizeof("00:00"), clock_is_24h_style() ? "%H:%M" : "%I:%M", tick_time);
+  static char time_buf[] = "00:00";
+  strftime(time_buf, sizeof("00:00"), clock_is_24h_style() ? "%H:%M" : "%I:%M", tick_time);
   
-  text_layer_set_text(s_time_layer, buffer);
+  text_layer_set_text(s_time_layer, time_buf);
+  
+  // Date
+  static char date_buf[] = "XXX 00 00";
+  strftime(date_buf, sizeof("XXX 00 00"), "%a %m %d", tick_time);
+  char * cptr = date_buf;
+  do {
+    *cptr = tolower((unsigned char) *cptr);
+  } while (*++cptr);
+  
+  text_layer_set_text(s_date_layer, date_buf);
   
   // Set composting mode based on day/night
   static bool day = true;
@@ -57,6 +71,7 @@ static void update_time() {
   if (!day && (tick_time->tm_hour >= 6 && tick_time->tm_hour < 18)) {
     bitmap_layer_set_compositing_mode(s_kirby_layer, GCompOpAssign);
     text_layer_set_text_color(s_time_layer, GColorBlack);
+    text_layer_set_text_color(s_date_layer, GColorBlack);
     window_set_background_color(s_main_window, GColorWhite);
     day = true;
   }
@@ -64,6 +79,7 @@ static void update_time() {
   else if (day && (tick_time->tm_hour >= 18 || tick_time->tm_hour < 6)) {
     bitmap_layer_set_compositing_mode(s_kirby_layer, GCompOpAssignInverted);
     text_layer_set_text_color(s_time_layer, GColorWhite);
+    text_layer_set_text_color(s_date_layer, GColorWhite);
     window_set_background_color(s_main_window, GColorBlack);
     day = false;
   }
@@ -89,7 +105,7 @@ static void main_window_load(Window *window) {
   // Time
   s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_EMULOGIC_24));
   
-  s_time_layer = text_layer_create(GRect(-4, 138, 148, 30));
+  s_time_layer = text_layer_create(GRect(-4, 140, 148, 30));
   text_layer_set_background_color(s_time_layer, GColorClear);
   text_layer_set_text_color(s_time_layer, GColorBlack);
   
@@ -98,8 +114,20 @@ static void main_window_load(Window *window) {
   
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_layer));
   
+  // Date
+  s_date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_EMULOGIC_12));
+  
+  s_date_layer = text_layer_create(GRect(15, 127, 114, 15));
+  text_layer_set_background_color(s_date_layer, GColorClear);
+  text_layer_set_text_color(s_date_layer, GColorBlack);
+  
+  text_layer_set_font(s_date_layer, s_date_font);
+  text_layer_set_text_alignment(s_date_layer, GTextAlignmentCenter);
+  
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_date_layer));
+  
   // Kirby
-  s_kirby_layer = bitmap_layer_create(GRect(24, 10, 96, 120));
+  s_kirby_layer = bitmap_layer_create(GRect(24, 5, 96, 120));
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_kirby_layer));
   
   srand(time(NULL));
@@ -115,6 +143,9 @@ static void main_window_unload(Window *window) {
   
   text_layer_destroy(s_time_layer);
   fonts_unload_custom_font(s_time_font);
+  
+  text_layer_destroy(s_date_layer);
+  fonts_unload_custom_font(s_date_font);
   
   bitmap_layer_destroy(s_kirby_layer);
   if (s_kirby)

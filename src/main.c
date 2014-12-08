@@ -144,6 +144,7 @@ static void bt_handler(bool connected) {
 
 static void batt_handler(BatteryChargeState charge) {
   
+  // Cache the last resource so we can tell if we need to update the display
   static uint32_t CUR_RES, LAST_RES;
   CUR_RES = 
       charge.is_plugged

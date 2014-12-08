@@ -24,7 +24,7 @@
 
 #define POS_TIME        GRect(-4, 140, 148, 30)
 #define POS_DATE        GRect(15, 127, 114, 15)
-#define POS_BT          GRect(9, 5, 7, 15)
+#define POS_BT          GRect(8, 5, 9, 15)
 #define POS_BATT        GRect(126, 5, 13, 10)
 #define POS_KBY         GRect(24, 5, 96, 120)
 

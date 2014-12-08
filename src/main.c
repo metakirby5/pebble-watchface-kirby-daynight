@@ -144,9 +144,8 @@ static void bt_handler(bool connected) {
 
 static void batt_handler(BatteryChargeState charge) {
   
-  if (s_battery)
-    gbitmap_destroy(s_battery);
-  s_battery = gbitmap_create_with_resource(
+  static uint32_t CUR_RES, LAST_RES;
+  CUR_RES = 
       charge.is_plugged
     ?   !charge.is_charging
     ?      RESOURCE_ID_BATT_OK
@@ -157,9 +156,17 @@ static void batt_handler(BatteryChargeState charge) {
     ?   RESOURCE_ID_BATT_2
     : charge.charge_percent > PWR_LO
     ?   RESOURCE_ID_BATT_1
-    : RESOURCE_ID_BATT_X);
-  bitmap_layer_set_bitmap(s_battery_layer, s_battery);
-  layer_mark_dirty(bitmap_layer_get_layer(s_battery_layer));
+    : RESOURCE_ID_BATT_X;
+  
+  if (CUR_RES != LAST_RES) {
+    if (s_battery)
+      gbitmap_destroy(s_battery);
+    s_battery = gbitmap_create_with_resource(CUR_RES);
+    bitmap_layer_set_bitmap(s_battery_layer, s_battery);
+    layer_mark_dirty(bitmap_layer_get_layer(s_battery_layer));
+
+    LAST_RES = CUR_RES;
+  }
 }
 
 static void main_window_load(Window *window) {
